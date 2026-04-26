@@ -1,0 +1,85 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Cosmic palette — design tokens.
+ *
+ * Lifted from /src/app/globals.css for design-iteration context. All values
+ * are HSL components (no `hsl()` wrapper) so they can be composed with alpha
+ * via `hsl(var(--token) / 0.4)`.
+ *
+ * Design intent: dark mode only, deep midnight base with two extremely subtle
+ * radial gradients suggesting depth — no decorative imagery, no purple-pink
+ * gradients, no mandalas. Indigo-violet leads; gold marks beneficial cues
+ * (exaltation, benefic planets); rose marks afflicted cues (debilitation,
+ * malefic planets). Surfaces are translucent glass — 3% white over backdrop
+ * blur with a 1px hairline border.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Surface */
+  --background: 265 47% 5%;     /* #0A0612 — deep midnight */
+  --foreground: 250 25% 95%;    /* near-white off-tint */
+
+  --card: 265 30% 9%;
+  --card-foreground: 250 25% 95%;
+
+  --popover: 265 35% 7%;
+  --popover-foreground: 250 25% 95%;
+
+  --secondary: 265 20% 14%;
+  --muted: 265 18% 12%;
+  --muted-foreground: 250 12% 65%;
+  --accent: 265 25% 16%;
+
+  /* Accent */
+  --primary: 247 73% 67%;       /* #7C6FE8 — indigo-violet */
+  --primary-foreground: 250 25% 98%;
+
+  --destructive: 335 73% 67%;   /* #E86F9C — muted rose */
+  --destructive-foreground: 250 25% 98%;
+
+  /* Hairlines */
+  --border: 250 20% 100% / 0.08;
+  --input: 250 20% 100% / 0.06;
+  --ring: 247 73% 67%;
+
+  /* Cosmic semantic tokens (used directly via cosmos-* utilities) */
+  --cosmos-midnight: 265 47% 5%;
+  --cosmos-surface:  250 20% 100% / 0.03;   /* glass surface */
+  --cosmos-line:     250 20% 100% / 0.08;   /* hairline border */
+  --cosmos-indigo:   247 73% 67%;           /* primary accent */
+  --cosmos-gold:     34 73% 67%;            /* #E8B96F — benefic / exaltation */
+  --cosmos-rose:     335 73% 67%;           /* #E86F9C — malefic / debilitation */
+
+  --radius: 0.75rem;
+}
+
+/* The two-radial body gradient — extremely subtle, no images. */
+body {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(
+      ellipse 90% 60% at 50% -10%,
+      hsl(247 60% 25% / 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 50% 110%,
+      hsl(247 50% 30% / 0.12),
+      transparent 60%
+    );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* The "translucent dark glass" pattern used for cards, dialogs, the rail. */
+.surface-glass {
+  background: hsl(var(--cosmos-surface));
+  backdrop-filter: blur(20px) saturate(110%);
+  border: 1px solid hsl(var(--cosmos-line));
+}
+
+/* The single permitted glow effect — applied only to active items. */
+.glow-active {
+  box-shadow:
+    0 0 0 1px hsl(var(--cosmos-indigo) / 0.7),
+    0 0 24px -4px hsl(var(--cosmos-indigo) / 0.35);
+}
