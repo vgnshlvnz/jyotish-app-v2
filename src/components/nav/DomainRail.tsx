@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, BookText, Compass } from "lucide-react";
+import { Search, BookText, Compass, Clock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Sanskrit } from "@/components/Sanskrit";
@@ -108,6 +108,13 @@ export function DomainRail() {
             >
               <Compass className="size-3.5" />
               Chart
+            </Link>
+            <Link
+              href="/hora"
+              className="inline-flex items-center gap-1.5 rounded-sm border border-brass/35 bg-ink-2 px-3 py-1.5 font-titling text-[10px] uppercase tracking-[0.2em] text-bone-2 transition-colors hover:border-brass hover:text-brass-hi"
+            >
+              <Clock className="size-3.5" />
+              Hora
             </Link>
             <Link
               href="/glossary"

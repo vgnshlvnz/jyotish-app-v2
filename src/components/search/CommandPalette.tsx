@@ -101,6 +101,21 @@ export function CommandPalette() {
               <Badge variant="indigo">Chart</Badge>
             </CommandItem>
             <CommandItem
+              value="page hora planetary hours muhurta"
+              onSelect={() => go("/hora")}
+            >
+              <span className="w-6 text-center font-display text-lg">⌚</span>
+              <span className="flex-1 truncate">
+                <Sanskrit className="not-italic text-foreground">
+                  Horā
+                </Sanskrit>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  Planetary hours table for any date + place
+                </span>
+              </span>
+              <Badge variant="indigo">Hora</Badge>
+            </CommandItem>
+            <CommandItem
               value="page glossary shabdakosha terms"
               onSelect={() => go("/glossary")}
             >
