@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Cosmic palette — dark mode only.
+ *
+ * Background: deep midnight (#0A0612) ≈ HSL(265 47% 5%)
+ * Indigo-violet primary (#7C6FE8)     ≈ HSL(247 73% 67%)
+ * Warm gold (#E8B96F)                  ≈ HSL(34 73% 67%)
+ * Muted rose (#E86F9C)                 ≈ HSL(335 73% 67%)
+ * Translucent surface: rgba(255 255 255 / 0.03)
+ * Hairline border:     rgba(255 255 255 / 0.08)
+ * ────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    --background: 265 47% 5%;
+    --foreground: 250 25% 95%;
+
+    --card: 265 30% 9%;
+    --card-foreground: 250 25% 95%;
+
+    --popover: 265 35% 7%;
+    --popover-foreground: 250 25% 95%;
+
+    --primary: 247 73% 67%;
+    --primary-foreground: 250 25% 98%;
+
+    --secondary: 265 20% 14%;
+    --secondary-foreground: 250 25% 95%;
+
+    --muted: 265 18% 12%;
+    --muted-foreground: 250 12% 65%;
+
+    --accent: 265 25% 16%;
+    --accent-foreground: 250 25% 95%;
+
+    --destructive: 335 73% 67%;
+    --destructive-foreground: 250 25% 98%;
+
+    --border: 250 20% 100% / 0.08;
+    --input: 250 20% 100% / 0.06;
+    --ring: 247 73% 67%;
+
+    --radius: 0.75rem;
+
+    /* Cosmic palette tokens (used directly via cosmos-* utilities) */
+    --cosmos-midnight: 265 47% 5%;
+    --cosmos-surface: 250 20% 100% / 0.03;
+    --cosmos-line: 250 20% 100% / 0.08;
+    --cosmos-indigo: 247 73% 67%;
+    --cosmos-gold: 34 73% 67%;
+    --cosmos-rose: 335 73% 67%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "ss01", "cv11";
+    background-image:
+      radial-gradient(
+        ellipse 90% 60% at 50% -10%,
+        hsl(247 60% 25% / 0.18),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 70% 50% at 50% 110%,
+        hsl(247 50% 30% / 0.12),
+        transparent 60%
+      );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+  }
+
+  /* Sanskrit typography helpers */
+  [lang="sa-Latn"] {
+    font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+    font-style: italic;
+    letter-spacing: 0.005em;
+  }
+  .font-display {
+    font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+    font-feature-settings: "lnum", "liga", "dlig";
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.35);
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Focus ring — visible on dark */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Translucent glass card surface */
+  .surface-glass {
+    background: hsl(var(--cosmos-surface));
+    backdrop-filter: blur(20px) saturate(110%);
+    -webkit-backdrop-filter: blur(20px) saturate(110%);
+    border: 1px solid hsl(var(--cosmos-line));
+  }
+
+  /* Single soft 1px outline-glow on active items */
+  .glow-active {
+    box-shadow:
+      0 0 0 1px hsl(var(--cosmos-indigo) / 0.7),
+      0 0 24px -4px hsl(var(--cosmos-indigo) / 0.35);
+  }
+
+  .text-gold {
+    color: hsl(var(--cosmos-gold));
+  }
+  .text-rose {
+    color: hsl(var(--cosmos-rose));
+  }
+  .text-indigo {
+    color: hsl(var(--cosmos-indigo));
+  }
+
+  .ring-gold {
+    --tw-ring-color: hsl(var(--cosmos-gold));
+  }
+  .ring-rose {
+    --tw-ring-color: hsl(var(--cosmos-rose));
+  }
+}
+
+/* Reduced motion — fully disable transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print styles for /print */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    background-image: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .surface-glass {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    backdrop-filter: none !important;
+  }
+}
