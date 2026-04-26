@@ -12,8 +12,12 @@ export type DomainId = "planets" | "rashis" | "nakshatras";
 export interface DomainMeta {
   readonly id: DomainId;
   readonly number: 1 | 2 | 3;
+  /** Roman numeral for the temple seal (I, II, III). */
+  readonly numeral: "I" | "II" | "III";
   readonly title: string;
   readonly sanskritTitle: string;
+  /** Devanāgarī rendering of the domain name. */
+  readonly deva: string;
   readonly subtitle: string;
   readonly count: number;
   readonly href: string;
@@ -26,8 +30,10 @@ export const DOMAINS: readonly [DomainMeta, DomainMeta, DomainMeta] = [
   {
     id: "planets",
     number: 1,
+    numeral: "I",
     title: "Planets",
     sanskritTitle: "Grahas",
+    deva: "ग्रह",
     subtitle: "9 Grahas",
     count: PLANETS.length,
     href: "/planets",
@@ -38,8 +44,10 @@ export const DOMAINS: readonly [DomainMeta, DomainMeta, DomainMeta] = [
   {
     id: "rashis",
     number: 2,
+    numeral: "II",
     title: "Rashis",
-    sanskritTitle: "Rashayah",
+    sanskritTitle: "Rāśayaḥ",
+    deva: "राशि",
     subtitle: "12 Signs",
     count: RASHIS.length,
     href: "/rashis",
@@ -50,8 +58,10 @@ export const DOMAINS: readonly [DomainMeta, DomainMeta, DomainMeta] = [
   {
     id: "nakshatras",
     number: 3,
+    numeral: "III",
     title: "Nakshatras",
-    sanskritTitle: "Nakshatrani",
+    sanskritTitle: "Nakṣatrāṇi",
+    deva: "नक्षत्र",
     subtitle: "27 Stars",
     count: NAKSHATRAS.length,
     href: "/nakshatras",

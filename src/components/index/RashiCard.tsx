@@ -1,61 +1,71 @@
 import Link from "next/link";
-import { Calendar } from "lucide-react";
 
 import { Sanskrit } from "@/components/Sanskrit";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Deva } from "@/components/devanagari-context";
+import { Capsule, type CapsuleTone } from "@/components/temple/Capsule";
+import { Tablet } from "@/components/temple/Tablet";
+import { RashiGlyph } from "@/components/visual/RashiGlyph";
+import { RASHI_DEVA } from "@/lib/data/devanagari";
 import { cn } from "@/lib/utils";
 import { getPlanetById } from "@/lib/data";
-import type { Rashi } from "@/lib/data";
+import type { Rashi, RashiId } from "@/lib/data";
 
 interface RashiCardProps {
   rashi: Rashi;
+  /** 0-based position in the rendered list, used for the "01"–"12" tag. */
+  index: number;
 }
 
-const ELEMENT_VARIANT: Record<
-  Rashi["element"],
-  "rose" | "gold" | "indigo" | "muted"
-> = {
-  fire: "rose",
-  earth: "gold",
-  air: "indigo",
-  water: "muted",
-  // Pancha-bhuta `ether` is not classically used by rashis, but the union
-  // requires a fallback so the lookup is exhaustive.
-  ether: "muted",
+/** Per-rashi accent color, aligned with element. Drives the yantra glyph via currentColor. */
+const RASHI_ACCENT: Record<RashiId, string> = {
+  // fire
+  mesha: "text-vermilion",
+  simha: "text-vermilion",
+  dhanu: "text-vermilion",
+  // earth
+  vrishabha: "text-leaf",
+  kanya: "text-leaf",
+  makara: "text-leaf",
+  // air
+  mithuna: "text-bone",
+  tula: "text-bone",
+  kumbha: "text-bone",
+  // water
+  karka: "text-indigo-cloth",
+  vrishchika: "text-indigo-cloth",
+  meena: "text-indigo-cloth",
 };
 
-const ELEMENT_LABEL: Record<Rashi["element"], string> = {
-  fire: "Fire",
-  earth: "Earth",
-  air: "Air",
-  water: "Water",
-  ether: "Ether",
+const ELEMENT_TONE: Record<Rashi["element"], CapsuleTone> = {
+  fire: "vermilion",
+  earth: "leaf",
+  air: "default",
+  water: "indigo",
+  // `ether` is not used by rashis classically; fall back to default.
+  ether: "default",
 };
 
-const MODALITY_LABEL: Record<Rashi["modality"], string> = {
-  chara: "Chara",
-  sthira: "Sthira",
-  dwiswabhava: "Dwiswabhava",
-};
-
-const REGION_LABEL: Record<Rashi["bodyRegion"], string> = {
-  upper: "Upper body",
-  middle: "Middle body",
-  lower: "Lower body",
-};
+function capitalize(s: string): string {
+  if (!s) return s;
+  const first = s.charAt(0);
+  return first.toUpperCase() + s.slice(1);
+}
 
 /**
- * Index-grid card for a single rashi. Whole card is a navigation link to
- * /rashis/[id]. Glyph dominates; element is colour-coded; the Tamil month
- * and ruling planet sit beneath as quieter metadata.
+ * Index-grid card for a single rashi, restyled to the Temple-at-Night
+ * aesthetic. The whole tablet is a navigation link to /rashis/[id].
+ *
+ * Layout: framed yantra glyph on the left (tinted to the rashi's element
+ * accent via currentColor), Sanskrit name + Devanāgarī + meta line in the
+ * centre, small index tag on the right; a chip row + ruling-planet line
+ * sit beneath.
  */
-export function RashiCard({ rashi }: RashiCardProps) {
+export function RashiCard({ rashi, index }: RashiCardProps) {
+  const accent = RASHI_ACCENT[rashi.id];
+  const elementTone = ELEMENT_TONE[rashi.element];
+  const indexTag = String(index + 1).padStart(2, "0");
   const ruler = getPlanetById(rashi.ruler);
-  const elementVariant = ELEMENT_VARIANT[rashi.element];
-  const elementLabel = ELEMENT_LABEL[rashi.element];
-  const modalityLabel = MODALITY_LABEL[rashi.modality];
-  const regionLabel = REGION_LABEL[rashi.bodyRegion];
+  const rulerSanskrit = ruler?.sanskritName ?? rashi.ruler;
 
   return (
     <Link
@@ -63,77 +73,61 @@ export function RashiCard({ rashi }: RashiCardProps) {
       aria-label={`${rashi.englishName} (${rashi.sanskritName})`}
       className="group block focus:outline-none"
     >
-      <Card
-        className={cn(
-          "h-full p-5",
-          "hover:-translate-y-0.5 hover:border-primary/40",
-          "group-focus-visible:border-primary/60 group-focus-visible:-translate-y-0.5",
-          "transition-all duration-200 ease-out",
-          "flex flex-col gap-4",
-        )}
+      <Tablet
+        corners
+        className="flex flex-col gap-0 px-4 py-4 group hover:-translate-y-0.5 transition-transform"
       >
-        {/* Glyph + symbol caption */}
-        <div className="flex items-start gap-4">
+        {/* Top row — glyph · names · index */}
+        <div className="flex items-center gap-3">
+          {/* LEFT — framed yantra glyph */}
           <div
             aria-hidden
-            className="flex size-16 shrink-0 flex-col items-center justify-center rounded-xl border border-cosmos-line bg-background/40"
+            className={cn(
+              "flex size-14 shrink-0 items-center justify-center border border-brass/20 bg-ink/35",
+              accent,
+            )}
           >
-            <span className="font-display text-5xl leading-none text-foreground/90">
-              {rashi.glyph}
-            </span>
+            <RashiGlyph id={rashi.id} size={46} />
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <Sanskrit className="not-italic text-2xl font-light leading-tight text-foreground">
+
+          {/* CENTER — Sanskrit name, Devanāgarī, English · symbol */}
+          <div className="flex min-w-0 flex-1 flex-col">
+            <Sanskrit className="not-italic font-display text-xl text-bone leading-none">
               {rashi.sanskritName}
             </Sanskrit>
-            <p className="text-xs text-muted-foreground">
-              {rashi.englishName}
-              <span className="mx-1.5 text-foreground/30">·</span>
-              <Sanskrit className="not-italic text-muted-foreground">
-                {rashi.tamilName}
-              </Sanskrit>
-            </p>
-            <p className="mt-0.5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground/80">
-              {rashi.symbol}
-            </p>
+            <Deva className="text-xs text-brass mt-0.5 block">
+              {RASHI_DEVA[rashi.id]}
+            </Deva>
+            <div className="font-titling text-[9px] uppercase tracking-[0.2em] text-bone-3 mt-1">
+              {rashi.englishName} · {rashi.symbol}
+            </div>
+          </div>
+
+          {/* RIGHT — index tag */}
+          <div
+            aria-hidden
+            className="font-titling text-[10px] tracking-[0.2em] text-bone-4"
+          >
+            {indexTag}
           </div>
         </div>
 
-        {/* Tamil month + ruler row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar aria-hidden className="size-3.5 text-muted-foreground/70" />
-            <span>{rashi.tamilMonth}</span>
-          </span>
-          {ruler ? (
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                aria-hidden
-                className="font-display text-base leading-none text-foreground/80"
-              >
-                {ruler.glyph}
-              </span>
-              <span>
-                Ruled by{" "}
-                <Sanskrit className="not-italic text-foreground/85">
-                  {ruler.sanskritName}
-                </Sanskrit>
-              </span>
-            </span>
-          ) : null}
+        {/* Capsule chips row */}
+        <div className="pt-2.5 flex flex-wrap items-center gap-1.5">
+          <Capsule tone={elementTone} className="!text-[9px]">
+            {capitalize(rashi.element)}
+          </Capsule>
+          <Capsule className="!text-[9px]">
+            {capitalize(rashi.modality)}
+          </Capsule>
         </div>
 
-        {/* Badges */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Badge variant={elementVariant}>{elementLabel}</Badge>
-          <Badge variant="outline">{modalityLabel}</Badge>
+        {/* Ruler line */}
+        <div className="mt-2 font-display text-xs italic text-bone-3">
+          ruled by{" "}
+          <Sanskrit className="not-italic">{rulerSanskrit}</Sanskrit>
         </div>
-
-        {/* Body region */}
-        <p className="mt-auto text-[11px] uppercase tracking-[0.14em] text-muted-foreground/80">
-          {regionLabel}
-        </p>
-      </Card>
+      </Tablet>
     </Link>
   );
 }

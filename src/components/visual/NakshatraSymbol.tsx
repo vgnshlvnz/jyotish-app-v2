@@ -3,15 +3,18 @@
 import type { ReactNode } from "react";
 
 import type { NakshatraId } from "@/lib/data/types";
+import { Yantra, type YantraFrame } from "./Yantra";
 import { cn } from "@/lib/utils";
 
 interface NakshatraSymbolProps {
   id: NakshatraId;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | number;
+  /** Render without the outer Yantra frame — used in compact contexts. */
+  bare?: boolean;
   className?: string;
 }
 
-const SIZE_MAP = { sm: 24, md: 48, lg: 96 } as const;
+const SIZE_MAP = { sm: 48, md: 96, lg: 192 } as const;
 
 const LABELS: Record<NakshatraId, string> = {
   ashwini: "Ashwini",
@@ -43,28 +46,91 @@ const LABELS: Record<NakshatraId, string> = {
   revati: "Revati",
 };
 
-export function NakshatraSymbol({ id, size = "md", className }: NakshatraSymbolProps) {
-  const px = SIZE_MAP[size];
+/**
+ * Per-nakshatra Yantra frame and spoke count.
+ *
+ * First 9 (Ashwini–Ashlesha) follow the Claude Design "Vedic Rune" prototype
+ * exactly. The remaining 18 are extended in the same vocabulary, picked
+ * thematically from each nakshatra's symbol (e.g. magha-throne → square,
+ * shatabhisha-100-stars → 12 spokes, anuradha-lotus → lotus frame).
+ */
+const FRAMES: Record<NakshatraId, { frame: YantraFrame; spokes: number }> = {
+  ashwini:           { frame: "triangle-up",   spokes: 3 },
+  bharani:           { frame: "triangle-down", spokes: 3 },
+  krittika:          { frame: "triangle-up",   spokes: 6 },
+  rohini:            { frame: "square",        spokes: 4 },
+  mrigashira:        { frame: "circle",        spokes: 3 },
+  ardra:             { frame: "circle",        spokes: 4 },
+  punarvasu:         { frame: "triangle-up",   spokes: 5 },
+  pushya:            { frame: "lotus",         spokes: 6 },
+  ashlesha:          { frame: "circle",        spokes: 5 },
+  magha:             { frame: "square",        spokes: 5 },
+  purva_phalguni:    { frame: "triangle-up",   spokes: 4 },
+  uttara_phalguni:   { frame: "triangle-down", spokes: 4 },
+  hasta:             { frame: "lotus",         spokes: 5 },
+  chitra:            { frame: "hexagram",      spokes: 6 },
+  swati:             { frame: "circle",        spokes: 5 },
+  vishakha:          { frame: "square",        spokes: 4 },
+  anuradha:          { frame: "lotus",         spokes: 8 },
+  jyeshtha:          { frame: "circle",        spokes: 5 },
+  mula:              { frame: "triangle-down", spokes: 5 },
+  purva_ashadha:     { frame: "triangle-up",   spokes: 4 },
+  uttara_ashadha:    { frame: "triangle-down", spokes: 4 },
+  shravana:          { frame: "circle",        spokes: 3 },
+  dhanishta:         { frame: "square",        spokes: 4 },
+  shatabhisha:       { frame: "circle",        spokes: 12 },
+  purva_bhadrapada:  { frame: "triangle-up",   spokes: 4 },
+  uttara_bhadrapada: { frame: "triangle-down", spokes: 4 },
+  revati:            { frame: "circle",        spokes: 4 },
+};
+
+/**
+ * Yantra-framed nakshatra symbol. The 27 inner seeds use a unified line-art
+ * vocabulary (single 64-coord viewBox, 1.5 stroke, round caps/joins, ≤6
+ * primitives each); they're translated 28 units to center inside the 120
+ * Yantra frame.
+ *
+ * Use `bare={true}` to render just the seed without the surrounding yantra
+ * (e.g. for very small contexts like the rail glyph row).
+ */
+export function NakshatraSymbol({ id, size = "md", bare = false, className }: NakshatraSymbolProps) {
+  const px = typeof size === "number" ? size : SIZE_MAP[size];
+
+  if (bare) {
+    return (
+      <svg
+        viewBox="0 0 64 64"
+        width={px}
+        height={px}
+        role="img"
+        aria-label={`${LABELS[id]} symbol`}
+        className={cn("text-foreground/85", className)}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {renderSeed(id)}
+      </svg>
+    );
+  }
+
+  const { frame, spokes } = FRAMES[id];
   return (
-    <svg
-      viewBox="0 0 64 64"
-      width={px}
-      height={px}
-      role="img"
-      aria-label={`${LABELS[id]} symbol`}
-      className={cn("text-foreground/85", className)}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <Yantra
+      frame={frame}
+      spokes={spokes}
+      size={px}
+      className={cn("text-current", className)}
     >
-      {renderShapes(id)}
-    </svg>
+      {/* Existing 64-viewBox seed centered inside the 120-viewBox yantra. */}
+      <g transform="translate(28 28)">{renderSeed(id)}</g>
+    </Yantra>
   );
 }
 
-function renderShapes(id: NakshatraId): ReactNode {
+function renderSeed(id: NakshatraId): ReactNode {
   switch (id) {
     // 1. Ashwini — horse's head: arched profile + eye + ear
     case "ashwini":
@@ -314,7 +380,7 @@ function renderShapes(id: NakshatraId): ReactNode {
         </>
       );
 
-    // 25. Purva Bhadrapada — front legs of cot: two parallel verticals, close stance
+    // 25. Purva Bhadrapada — front legs of cot
     case "purva_bhadrapada":
       return (
         <>
@@ -324,7 +390,7 @@ function renderShapes(id: NakshatraId): ReactNode {
         </>
       );
 
-    // 26. Uttara Bhadrapada — back legs of cot: two verticals, wider stance with bottom bar
+    // 26. Uttara Bhadrapada — back legs of cot
     case "uttara_bhadrapada":
       return (
         <>

@@ -10,6 +10,7 @@ import {
   type DetailTab,
 } from "@/components/detail/DetailTabs";
 import { Badge } from "@/components/ui/badge";
+import { PlanetGlyph } from "@/components/visual/PlanetGlyph";
 import { ZodiacDial } from "@/components/visual/ZodiacDial";
 import {
   KARAKATWAS,
@@ -22,10 +23,25 @@ import {
   type PlanetId,
   type RashiId,
 } from "@/lib/data";
+import { PLANET_DEVA } from "@/lib/data/devanagari";
+import { cn } from "@/lib/utils";
 
 interface PlanetDetailPageProps {
   params: Promise<{ id: string }>;
 }
+
+/** Per-planet accent color — drives the yantra glyph via currentColor. */
+const PLANET_ACCENT: Record<PlanetId, string> = {
+  sun: "text-turmeric",
+  moon: "text-bone",
+  mars: "text-vermilion",
+  mercury: "text-leaf",
+  jupiter: "text-turmeric",
+  venus: "text-bone",
+  saturn: "text-indigo-cloth",
+  rahu: "text-indigo-cloth",
+  ketu: "text-maroon",
+};
 
 const CABINET_LABEL: Record<Planet["cabinetRole"], string> = {
   king: "King",
@@ -153,13 +169,19 @@ export default async function PlanetDetailPage({ params }: PlanetDetailPageProps
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 pt-8 md:pt-12">
       <DetailHeader
-        eyebrow={{ number: 1, label: "Grahas" }}
+        eyebrow={{ numeral: "I", label: `Graha · ${String(index + 1).padStart(2, "0")} of 09` }}
         glyph={
-          <span aria-hidden className="font-display text-7xl leading-none">
-            {planet.glyph}
-          </span>
+          <div
+            className={cn(
+              "flex items-center justify-center w-full h-full",
+              PLANET_ACCENT[planet.id],
+            )}
+          >
+            <PlanetGlyph id={planet.id} size={88} />
+          </div>
         }
         sanskritName={planet.sanskritName}
+        deva={PLANET_DEVA[planet.id]}
         englishName={planet.englishName}
         tamilName={planet.tamilName}
         meaning={planet.persuasion}

@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { Sanskrit } from "@/components/Sanskrit";
 import { Badge } from "@/components/ui/badge";
 import { DetailHeader } from "@/components/detail/DetailHeader";
+import { RashiGlyph } from "@/components/visual/RashiGlyph";
+import { RASHI_DEVA } from "@/lib/data/devanagari";
+import { cn } from "@/lib/utils";
 import {
   DetailRows,
   DetailSection,
@@ -54,6 +57,26 @@ const ELEMENT_LABEL: Record<Rashi["element"], string> = {
   air: "Air",
   water: "Water",
   ether: "Ether",
+};
+
+/** Per-rashi accent color, aligned with element. Drives the yantra glyph via currentColor. */
+const RASHI_ACCENT: Record<RashiId, string> = {
+  // fire
+  mesha: "text-vermilion",
+  simha: "text-vermilion",
+  dhanu: "text-vermilion",
+  // earth
+  vrishabha: "text-leaf",
+  kanya: "text-leaf",
+  makara: "text-leaf",
+  // air
+  mithuna: "text-bone",
+  tula: "text-bone",
+  kumbha: "text-bone",
+  // water
+  karka: "text-indigo-cloth",
+  vrishchika: "text-indigo-cloth",
+  meena: "text-indigo-cloth",
 };
 
 const MODALITY_LABEL: Record<Modality, string> = {
@@ -562,13 +585,19 @@ export default async function RashiDetailPage({ params }: RashiDetailPageProps) 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 pt-8 md:pt-12">
       <DetailHeader
-        eyebrow={{ number: 2, label: "Rashayah" }}
+        eyebrow={{ numeral: "II", label: `Rāśi · ${String(index + 1).padStart(2, "0")} of 12` }}
         glyph={
-          <span className="font-display text-7xl leading-none">
-            {rashi.glyph}
-          </span>
+          <div
+            className={cn(
+              "flex items-center justify-center w-full h-full",
+              RASHI_ACCENT[rashi.id],
+            )}
+          >
+            <RashiGlyph id={rashi.id} size={88} />
+          </div>
         }
         sanskritName={rashi.sanskritName}
+        deva={RASHI_DEVA[rashi.id]}
         englishName={rashi.englishName}
         tamilName={rashi.tamilName}
         meaning={`${rashi.symbol} · ${rashi.tamilMonth}`}

@@ -18,6 +18,7 @@ import {
   regionFromBodyPart,
 } from "@/components/visual/KalapurushaFigure";
 import { NakshatraSymbol } from "@/components/visual/NakshatraSymbol";
+import { NAKSHATRA_DEVA } from "@/lib/data/devanagari";
 import {
   NAKSHATRAS,
   getNakshatraById,
@@ -626,16 +627,14 @@ export default async function NakshatraDetailPage({ params }: PageProps) {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 pt-8 md:pt-12">
       <DetailHeader
-        eyebrow={{ number: 3, label: "Nakshatras" }}
+        eyebrow={{ numeral: "III", label: `Nakṣatra · ${String(n.number).padStart(2, "0")} of 27` }}
         glyph={
-          <div className="flex flex-col items-center gap-1">
-            <NakshatraSymbol id={n.id} size="md" className="text-foreground" />
-            <span className="font-display text-xs tabular-nums text-muted-foreground">
-              {n.number} / 27
-            </span>
+          <div className="flex items-center justify-center w-full h-full text-turmeric">
+            <NakshatraSymbol id={n.id} size={88} />
           </div>
         }
         sanskritName={n.sanskritName}
+        deva={NAKSHATRA_DEVA[n.id]}
         englishName={n.englishMeaning}
         tamilName={n.tamilName}
         meaning={`Lunar mansion ${n.number} of 27 · ${spanLabel}`}

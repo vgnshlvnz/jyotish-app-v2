@@ -11,8 +11,11 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
-        display: ["var(--font-cormorant)", "ui-serif", "Georgia"],
+        sans: ["var(--font-eb-garamond)", "ui-serif", "Georgia"],
+        ui: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+        display: ["var(--font-eb-garamond)", "ui-serif", "Georgia"],
+        titling: ["var(--font-cormorant-sc)", "ui-serif", "Georgia"],
+        deva: ["var(--font-tiro-devanagari)", "var(--font-eb-garamond)", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -48,7 +51,7 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Cosmic palette
+        // Bridge: cosmos-* aliased to temple values via globals.css vars.
         cosmos: {
           midnight: "hsl(var(--cosmos-midnight))",
           surface: "hsl(var(--cosmos-surface))",
@@ -57,6 +60,16 @@ const config: Config = {
           gold: "hsl(var(--cosmos-gold))",
           rose: "hsl(var(--cosmos-rose))",
         },
+        // Temple-at-night palette — direct hex tokens (no HSL wrapping).
+        ink:   { DEFAULT: "var(--ink)", 2: "var(--ink-2)", 3: "var(--ink-3)", 4: "var(--ink-4)" },
+        bone:  { DEFAULT: "var(--bone)", 2: "var(--bone-2)", 3: "var(--bone-3)", 4: "var(--bone-4)" },
+        brass: { DEFAULT: "var(--brass)", hi: "var(--brass-hi)", lo: "var(--brass-lo)" },
+        saffron: "var(--saffron)",
+        vermilion: { DEFAULT: "var(--vermilion)", 2: "var(--vermilion-2)" },
+        maroon: "var(--maroon)",
+        turmeric: "var(--turmeric)",
+        indigocloth: { DEFAULT: "var(--indigo)", 2: "var(--indigo-2)" },
+        leaf: "var(--leaf)",
       },
       borderRadius: {
         lg: "var(--radius)",

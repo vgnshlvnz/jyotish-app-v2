@@ -5,7 +5,7 @@ import * as React from "react";
 import { FilterChips, type FilterChip } from "@/components/index/FilterChips";
 import { IndexHeader } from "@/components/index/IndexHeader";
 import { NakshatraCard } from "@/components/index/NakshatraCard";
-import { Sanskrit } from "@/components/Sanskrit";
+import { BrassRule } from "@/components/temple/BrassRule";
 import { NAKSHATRAS } from "@/lib/data";
 import type { Nakshatra } from "@/lib/data";
 
@@ -58,24 +58,24 @@ const CHIPS: readonly FilterChip<NakshatraFilterId>[] = [
 
 interface CycleSection {
   title: string;
-  sanskritSubtitle: string;
+  cycle: "I" | "II" | "III";
   nakshatras: readonly Nakshatra[];
 }
 
 const SECTIONS: readonly CycleSection[] = [
   {
     title: "Ashwini → Ashlesha",
-    sanskritSubtitle: "Cycle 1",
+    cycle: "I",
     nakshatras: NAKSHATRAS.filter((n) => n.number >= 1 && n.number <= 9),
   },
   {
     title: "Magha → Jyeshtha",
-    sanskritSubtitle: "Cycle 2",
+    cycle: "II",
     nakshatras: NAKSHATRAS.filter((n) => n.number >= 10 && n.number <= 18),
   },
   {
     title: "Mula → Revati",
-    sanskritSubtitle: "Cycle 3",
+    cycle: "III",
     nakshatras: NAKSHATRAS.filter((n) => n.number >= 19 && n.number <= 27),
   },
 ];
@@ -95,11 +95,13 @@ export default function NakshatrasIndexPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 pt-8 md:pt-12">
       <IndexHeader
-        number={3}
+        numeral="III"
+        eyebrow="The Twenty-Seven Lunar Mansions"
         title="Nakshatras"
         sanskritTitle="Nakṣatrāṇi"
+        deva="नक्षत्राणि"
         count={27}
-        description="The twenty-seven lunar mansions, each thirteen-twenty wide, governed by a deity, a presiding dasha lord, and an animal yoni — the Moon's nightly resting places."
+        description="Twenty-seven lunar mansions, each thirteen-twenty wide. Governed by a deity, presided by a daśā lord, riding an animal yoni — the Moon's nightly resting places."
       />
       <FilterChips
         chips={CHIPS}
@@ -111,20 +113,18 @@ export default function NakshatrasIndexPage() {
       <div className="flex flex-col gap-12">
         {filteredSections.map((section) => (
           <section key={section.title} className="flex flex-col gap-5">
-            <header className="flex items-baseline gap-4 border-b border-cosmos-line pb-3">
-              <h2 className="font-display text-2xl font-light leading-tight text-foreground">
+            <header className="flex flex-col gap-1.5">
+              <h2 className="font-display text-3xl text-bone leading-none">
                 {section.title}
               </h2>
-              <Sanskrit className="not-italic text-xs text-muted-foreground">
-                {section.sanskritSubtitle}
-              </Sanskrit>
-              <span className="ml-auto tabular-nums text-[11px] uppercase tracking-[0.14em] text-muted-foreground/80">
-                {section.items.length} of {section.nakshatras.length}
-              </span>
+              <p className="font-titling text-[11px] uppercase tracking-[0.2em] text-bone-3">
+                Cycle {section.cycle} · {section.items.length} of {section.nakshatras.length}
+              </p>
+              <BrassRule />
             </header>
 
             {section.items.length === 0 ? (
-              <p className="text-sm italic text-muted-foreground">
+              <p className="text-sm italic text-bone-3">
                 No matches in this cycle.
               </p>
             ) : (

@@ -1,45 +1,59 @@
 import { Sanskrit } from "@/components/Sanskrit";
+import { Deva } from "@/components/devanagari-context";
+import { Eyebrow } from "@/components/temple/Eyebrow";
+import { Seal } from "@/components/temple/Seal";
+import { BrassRule } from "@/components/temple/BrassRule";
 
 interface IndexHeaderProps {
-  number: 1 | 2 | 3;
+  numeral: "I" | "II" | "III";
+  /** Eyebrow line above the title (e.g. "The Nine Grahas"). */
+  eyebrow: string;
   title: string;
   sanskritTitle: string;
+  /** Devanāgarī rendering of the title. */
+  deva: string;
   count: number;
   description: string;
 }
 
 /**
- * Big-number page header used at the top of each index route, mirroring the
- * rail's tile styling at a larger scale.
+ * Big-serif page header used at the top of each index route. Echoes the
+ * prototype's "Navagrahā" / "Rāśayaḥ" / "Nakṣatrāṇi" titling — uppercase
+ * eyebrow with vermilion seal + classical-display serif name + Devanāgarī
+ * subtitle, with the descriptive blurb right-aligned beside it.
  */
 export function IndexHeader({
-  number,
+  numeral,
+  eyebrow,
   title,
   sanskritTitle,
+  deva,
   count,
   description,
 }: IndexHeaderProps) {
   return (
-    <header className="flex flex-col gap-3 pb-6 md:flex-row md:items-end md:gap-8 md:pb-10">
-      <div className="flex items-baseline gap-4">
-        <span
-          aria-hidden
-          className="font-display text-7xl font-light leading-none tabular-nums text-foreground md:text-8xl"
-        >
-          {number}
-        </span>
-        <div className="flex flex-col">
-          <h1 className="font-display text-3xl font-light leading-tight text-foreground md:text-4xl">
-            {title}
+    <header className="flex flex-col gap-5 pb-6">
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-10">
+        <div className="flex flex-col gap-3">
+          <Eyebrow className="flex items-center gap-3 normal-case">
+            <Seal size="sm">{numeral}</Seal>
+            <span className="font-titling uppercase tracking-[0.22em] text-brass">
+              {eyebrow}
+            </span>
+          </Eyebrow>
+          <h1 className="font-display text-5xl font-normal leading-none text-bone md:text-7xl">
+            <Sanskrit className="not-italic font-display">{sanskritTitle}</Sanskrit>
           </h1>
-          <Sanskrit className="text-sm not-italic text-muted-foreground">
-            {sanskritTitle} · {count}
-          </Sanskrit>
+          <Deva className="text-2xl text-brass">{deva}</Deva>
+          <p className="font-titling text-[11px] uppercase tracking-[0.2em] text-bone-3">
+            {title} · {count}
+          </p>
         </div>
+        <p className="max-w-md font-display text-base italic leading-relaxed text-bone-2 md:text-right">
+          {description}
+        </p>
       </div>
-      <p className="max-w-xl text-sm text-muted-foreground md:ml-auto md:text-base md:text-right">
-        {description}
-      </p>
+      <BrassRule />
     </header>
   );
 }

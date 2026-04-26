@@ -11,6 +11,7 @@ import { DomainCard } from "@/components/nav/DomainCard";
 import { DomainGlyphs } from "@/components/nav/domain-glyphs";
 import { DOMAINS, getDomainFromPath, type DomainId } from "@/lib/domain";
 import { useCommandPalette } from "@/components/search/command-palette-context";
+import { useDevanagari } from "@/components/devanagari-context";
 
 const COMPACT_SCROLL_THRESHOLD = 200;
 
@@ -89,19 +90,21 @@ export function DomainRail() {
       <div className="container mx-auto px-6">
         {/* Top utility row */}
         <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="group flex items-baseline gap-3">
-            <span className="font-display text-xl font-medium tracking-tight text-foreground">
-              Jyotish
+          <Link href="/" className="group flex items-center gap-3">
+            <span aria-hidden className="relative inline-block size-5 rounded-full border border-brass">
+              <span className="absolute inset-1 rounded-full bg-brass shadow-[0_0_8px_rgba(233,192,97,0.6)]" />
             </span>
-            <Sanskrit className="text-sm not-italic text-muted-foreground transition-colors group-hover:text-foreground/85">
-              Reference
-            </Sanskrit>
+            <span className="font-titling text-sm font-semibold uppercase tracking-[0.18em] text-bone">
+              <Sanskrit className="not-italic font-titling">Jyotiṣa</Sanskrit>
+              <span className="ml-2 text-bone-3">· Reference</span>
+            </span>
           </Link>
           <div className="flex items-center gap-2">
+            <DevaToggle />
             <SearchTrigger onOpen={openPalette} />
             <Link
               href="/glossary"
-              className="inline-flex items-center gap-1.5 rounded-md border border-cosmos-line bg-cosmos-surface px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              className="inline-flex items-center gap-1.5 rounded-sm border border-brass/35 bg-ink-2 px-3 py-1.5 font-titling text-[10px] uppercase tracking-[0.2em] text-bone-2 transition-colors hover:border-brass hover:text-brass-hi"
             >
               <BookText className="size-3.5" />
               Glossary
@@ -122,8 +125,10 @@ export function DomainRail() {
             <DomainCard
               key={domain.id}
               number={domain.number}
+              numeral={domain.numeral}
               title={domain.title}
               sanskritTitle={domain.sanskritTitle}
+              deva={domain.deva}
               subtitle={domain.subtitle}
               glyphs={<DomainGlyphs id={domain.id} />}
               href={domain.href}
@@ -142,13 +147,36 @@ function SearchTrigger({ onOpen }: { onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      className="inline-flex items-center gap-2 rounded-md border border-cosmos-line bg-cosmos-surface px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+      className="inline-flex items-center gap-2 rounded-sm border border-brass/35 bg-ink-2 px-3 py-1.5 font-titling text-[10px] uppercase tracking-[0.2em] text-bone-2 transition-colors hover:border-brass hover:text-brass-hi"
     >
       <Search className="size-3.5" />
       <span>Search</span>
-      <kbd className="hidden md:inline ml-1 rounded border border-cosmos-line bg-background/60 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+      <kbd className="hidden md:inline ml-1 rounded-sm border border-brass/30 bg-ink/60 px-1.5 py-0.5 font-ui font-mono text-[9px] tracking-normal text-bone-3">
         ⌘K
       </kbd>
+    </button>
+  );
+}
+
+function DevaToggle() {
+  const { showDevanagari, toggle } = useDevanagari();
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      title={showDevanagari ? "Hide Devanāgarī" : "Show Devanāgarī"}
+      aria-pressed={showDevanagari}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-sm border bg-ink-2 px-3 py-1.5 font-titling text-[10px] uppercase tracking-[0.2em] transition-colors",
+        showDevanagari
+          ? "border-brass text-brass-hi"
+          : "border-brass/30 text-bone-3 hover:border-brass hover:text-bone",
+      )}
+    >
+      <span lang="sa" className="font-deva text-sm leading-none normal-case tracking-normal">
+        अ
+      </span>
+      <span className="hidden sm:inline">Deva</span>
     </button>
   );
 }
@@ -170,7 +198,7 @@ export function DomainBottomBar() {
           <BottomTab
             key={domain.id}
             href={domain.href}
-            number={domain.number}
+            numeral={domain.numeral}
             title={domain.title}
             sanskritTitle={domain.sanskritTitle}
             active={active === domain.id}
@@ -183,13 +211,13 @@ export function DomainBottomBar() {
 
 function BottomTab({
   href,
-  number,
+  numeral,
   title,
   sanskritTitle,
   active,
 }: {
   href: string;
-  number: 1 | 2 | 3;
+  numeral: "I" | "II" | "III";
   title: string;
   sanskritTitle: string;
   active: boolean;
@@ -201,24 +229,24 @@ function BottomTab({
       aria-selected={active}
       className={cn(
         "flex flex-col items-center gap-0.5 px-2 py-3 transition-colors",
-        active ? "text-foreground" : "text-muted-foreground active:text-foreground",
+        active ? "text-bone" : "text-bone-3 active:text-bone",
       )}
     >
       <span
         className={cn(
-          "font-display text-2xl font-light leading-none transition-colors",
-          active ? "text-foreground" : "text-muted-foreground/80",
+          "font-titling text-base font-semibold leading-none transition-colors",
+          active ? "text-brass-hi" : "text-bone-3",
         )}
       >
-        {number}
+        {numeral}
       </span>
-      <span className="text-[10px] font-medium uppercase tracking-[0.14em]">
+      <span className="font-titling text-[10px] font-medium uppercase tracking-[0.16em]">
         {title}
       </span>
       <Sanskrit
         className={cn(
           "text-[9px] not-italic",
-          active ? "text-cosmos-indigo" : "text-muted-foreground/60",
+          active ? "text-brass" : "text-bone-4",
         )}
       >
         {sanskritTitle}
@@ -242,8 +270,10 @@ export function DomainHero({ active }: { active: DomainId | null }) {
         <DomainCard
           key={domain.id}
           number={domain.number}
+          numeral={domain.numeral}
           title={domain.title}
           sanskritTitle={domain.sanskritTitle}
+          deva={domain.deva}
           subtitle={domain.subtitle}
           glyphs={<DomainGlyphs id={domain.id} />}
           href={domain.href}

@@ -70,11 +70,13 @@ export default function PlanetsIndexPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 pt-8 md:pt-12">
       <IndexHeader
-        number={1}
+        numeral="I"
+        eyebrow="The Nine Grahas"
         title="Planets"
-        sanskritTitle="Grahas"
-        count={PLANETS.length}
-        description="The nine grahas — luminaries, personal planets, the great malefics, and the two shadowy lunar nodes — form the foundational cabinet of Vedic astrology."
+        sanskritTitle="Navagrahā"
+        deva="नवग्रह"
+        count={9}
+        description="The cabinet of nine. Two luminaries, five tārā-grahas, and the two shadow nodes — the cast of every horoscope, each with a fixed archetypal office."
       />
       <FilterChips
         chips={CHIPS}
@@ -83,8 +85,8 @@ export default function PlanetsIndexPage() {
         ariaLabel="Filter planets by nature or grouping"
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((planet) => (
-          <PlanetCard key={planet.id} planet={planet} />
+        {filtered.map((planet, i) => (
+          <PlanetCard key={planet.id} planet={planet} index={i} />
         ))}
       </div>
       {filtered.length === 0 ? (

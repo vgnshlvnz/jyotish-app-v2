@@ -66,11 +66,13 @@ export default function RashisIndexPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 pt-8 md:pt-12">
       <IndexHeader
-        number={2}
+        numeral="II"
+        eyebrow="The Twelve Rāśis"
         title="Rashis"
         sanskritTitle="Rāśayaḥ"
+        deva="राशयः"
         count={12}
-        description="The twelve thirty-degree segments of the zodiac, each ruled by a planet, governing a region of the cosmic body and a Tamil solar month."
+        description="Twelve thirty-degree segments of the ecliptic. Each ruled by a graha, holds an element and modality, and corresponds to a region of the cosmic body of Kālapuruṣa."
       />
       <FilterChips
         chips={CHIPS}
@@ -79,8 +81,8 @@ export default function RashisIndexPage() {
         ariaLabel="Filter rashis by element or modality"
       />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {filtered.map((rashi) => (
-          <RashiCard key={rashi.id} rashi={rashi} />
+        {filtered.map((r, i) => (
+          <RashiCard key={r.id} rashi={r} index={i} />
         ))}
       </div>
       {filtered.length === 0 ? (

@@ -2,56 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * Cosmic palette — dark mode only.
+/* ─────────────────────────────────────────────────────────────────────────
+ * Temple-at-night palette — classical Vedic "wall inscription" rework.
  *
- * Background: deep midnight (#0A0612) ≈ HSL(265 47% 5%)
- * Indigo-violet primary (#7C6FE8)     ≈ HSL(247 73% 67%)
- * Warm gold (#E8B96F)                  ≈ HSL(34 73% 67%)
- * Muted rose (#E86F9C)                 ≈ HSL(335 73% 67%)
- * Translucent surface: rgba(255 255 255 / 0.03)
- * Hairline border:     rgba(255 255 255 / 0.08)
- * ────────────────────────────────────────────────────────────────────────── */
+ * Lampblack ground (--ink) holds the stage. Brass leaf (--brass) is the
+ * primary accent; vermilion sindoor and deep maroon mark afflicted /
+ * malefic cues; turmeric and saffron mark auspicious / benefic cues; indigo
+ * cloth is the cool-tone counterweight; sandstone bone (--bone) is type.
+ *
+ * Two layers of values:
+ *   1. Temple tokens (--ink, --bone, --brass, etc.) — direct hex values for
+ *      use via `var(--token)` in CSS or `[color:var(--token)]` in TW.
+ *   2. shadcn-style HSL components (--background, --foreground, --primary)
+ *      so the existing UI primitives stay wired up.
+ * ──────────────────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
-    --background: 265 47% 5%;
-    --foreground: 250 25% 95%;
+    /* Direct temple tokens — full hex values, used via var(--token) */
+    --ink:        #0e0a07;
+    --ink-2:      #15100b;
+    --ink-3:      #1c160f;
+    --ink-4:      #251d14;
 
-    --card: 265 30% 9%;
-    --card-foreground: 250 25% 95%;
+    --bone:       #ebd9b4;
+    --bone-2:     #c9b487;
+    --bone-3:     #8a7a58;
+    --bone-4:     #5c5238;
 
-    --popover: 265 35% 7%;
-    --popover-foreground: 250 25% 95%;
+    --brass:      #c79a3a;
+    --brass-hi:   #e9c061;
+    --brass-lo:   #8b6a1e;
 
-    --primary: 247 73% 67%;
-    --primary-foreground: 250 25% 98%;
+    --saffron:    #e89a3c;
+    --vermilion:  #c8362a;
+    --vermilion-2:#9b2419;
+    --maroon:     #6e1c14;
+    --turmeric:   #d9a73a;
+    --indigo:     #2e3a6e;
+    --indigo-2:   #4a5a9a;
+    --leaf:       #4a6a3a;
 
-    --secondary: 265 20% 14%;
-    --secondary-foreground: 250 25% 95%;
+    /* Shadows + leaf glow */
+    --leaf-glow:    0 0 0 1px rgba(199, 154, 58, 0.45),
+                    0 0 24px -6px rgba(233, 192, 97, 0.5);
+    --inset-bevel:  inset 0 1px 0 rgba(235, 217, 180, 0.06),
+                    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    --shadow-deep:  0 24px 60px -20px rgba(0, 0, 0, 0.85);
 
-    --muted: 265 18% 12%;
-    --muted-foreground: 250 12% 65%;
+    /* shadcn-style HSL component tokens — bone over ink, brass for primary */
+    --background:           28 27% 4%;     /* #0e0a07 ink */
+    --foreground:           41 51% 81%;    /* #ebd9b4 bone */
+    --card:                 33 26% 9%;     /* #1c160f ink-3 */
+    --card-foreground:      41 51% 81%;    /* bone */
+    --popover:              30 27% 7%;     /* between ink-2 and ink-3 */
+    --popover-foreground:   41 51% 81%;
+    --primary:              39 57% 50%;    /* #c79a3a brass — the new primary */
+    --primary-foreground:   28 27% 4%;     /* ink */
+    --secondary:            34 24% 11%;    /* between ink-3 and ink-4 */
+    --secondary-foreground: 41 41% 73%;    /* bone-2 */
+    --muted:                33 22% 9%;
+    --muted-foreground:     41 21% 44%;    /* bone-3 */
+    --accent:               36 27% 12%;    /* ink-4 */
+    --accent-foreground:    41 51% 81%;
+    --destructive:          5 65% 47%;     /* #c8362a vermilion */
+    --destructive-foreground: 41 51% 95%;
+    --border:               39 57% 50% / 0.18;   /* faint brass hairline */
+    --input:                39 57% 50% / 0.14;
+    --ring:                 39 65% 64%;    /* brass-hi */
 
-    --accent: 265 25% 16%;
-    --accent-foreground: 250 25% 95%;
+    --radius: 0.25rem;  /* far less rounded — wall inscription, not soft glass */
 
-    --destructive: 335 73% 67%;
-    --destructive-foreground: 250 25% 98%;
-
-    --border: 250 20% 100% / 0.08;
-    --input: 250 20% 100% / 0.06;
-    --ring: 247 73% 67%;
-
-    --radius: 0.75rem;
-
-    /* Cosmic palette tokens (used directly via cosmos-* utilities) */
-    --cosmos-midnight: 265 47% 5%;
-    --cosmos-surface: 250 20% 100% / 0.03;
-    --cosmos-line: 250 20% 100% / 0.08;
-    --cosmos-indigo: 247 73% 67%;
-    --cosmos-gold: 34 73% 67%;
-    --cosmos-rose: 335 73% 67%;
+    /* Bridging the old "cosmos" tokens to temple equivalents so existing
+       components keep working visually while we refactor them. */
+    --cosmos-midnight: 28 27% 4%;          /* ink */
+    --cosmos-surface:  33 26% 9% / 0.6;    /* translucent ink-3 panel */
+    --cosmos-line:     39 57% 50% / 0.18;  /* faint brass hairline */
+    --cosmos-indigo:   39 57% 50%;         /* brass — primary accent shift */
+    --cosmos-gold:     43 67% 54%;         /* turmeric */
+    --cosmos-rose:     5 65% 47%;          /* vermilion */
   }
 }
 
@@ -62,87 +91,221 @@
   html {
     color-scheme: dark;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    text-rendering: geometricPrecision;
   }
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-feature-settings: "ss01", "cv11";
+    font-family: var(--font-eb-garamond), 'Cormorant Garamond', Georgia, serif;
+    font-feature-settings: "liga", "kern";
+    /* Temple-at-night layered ground: brass-warm halo top, indigo cloth
+       bottom, faint twin star pricks. No imagery, no mandalas. */
     background-image:
-      radial-gradient(
-        ellipse 90% 60% at 50% -10%,
-        hsl(247 60% 25% / 0.18),
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse 70% 50% at 50% 110%,
-        hsl(247 50% 30% / 0.12),
-        transparent 60%
-      );
+      radial-gradient(1200px 600px at 50% -10%, rgba(199,154,58,0.06), transparent 60%),
+      radial-gradient(900px 600px at 50% 110%, rgba(46,58,110,0.10), transparent 60%),
+      radial-gradient(2px 2px at 20% 30%, rgba(235,217,180,0.04) 50%, transparent 51%),
+      radial-gradient(1px 1px at 80% 70%, rgba(235,217,180,0.05) 50%, transparent 51%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
   }
 
-  /* Sanskrit typography helpers */
+  /* Sanskrit / Devanāgarī typography helpers */
   [lang="sa-Latn"] {
-    font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+    font-family: var(--font-eb-garamond), 'Cormorant Garamond', Georgia, serif;
     font-style: italic;
     letter-spacing: 0.005em;
   }
+  [lang="sa"], .deva {
+    font-family: var(--font-tiro-devanagari), var(--font-eb-garamond), serif;
+    font-style: normal;
+  }
   .font-display {
-    font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+    font-family: var(--font-eb-garamond), 'Cormorant Garamond', Georgia, serif;
     font-feature-settings: "lnum", "liga", "dlig";
+  }
+  .font-titling {
+    font-family: var(--font-cormorant-sc), var(--font-eb-garamond), Georgia, serif;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .font-ui {
+    font-family: var(--font-inter), system-ui, sans-serif;
   }
 
   ::selection {
-    background-color: hsl(var(--primary) / 0.35);
-    color: hsl(var(--primary-foreground));
+    background-color: var(--brass);
+    color: var(--ink);
   }
 
-  /* Focus ring — visible on dark */
+  /* Focus ring — brass on dark */
   :focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 1px solid var(--brass);
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius: 2px;
   }
 }
 
 @layer components {
-  /* Translucent glass card surface */
+  /* ─── Bridging the old surface/glow utilities to temple equivalents ─── */
   .surface-glass {
-    background: hsl(var(--cosmos-surface));
-    backdrop-filter: blur(20px) saturate(110%);
-    -webkit-backdrop-filter: blur(20px) saturate(110%);
-    border: 1px solid hsl(var(--cosmos-line));
+    background: linear-gradient(180deg, var(--ink-3), var(--ink-2));
+    border: 1px solid rgba(199, 154, 58, 0.18);
+    box-shadow: var(--inset-bevel), var(--shadow-deep);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
-
-  /* Single soft 1px outline-glow on active items */
   .glow-active {
-    box-shadow:
-      0 0 0 1px hsl(var(--cosmos-indigo) / 0.7),
-      0 0 24px -4px hsl(var(--cosmos-indigo) / 0.35);
+    border-color: rgba(199, 154, 58, 0.5) !important;
+    box-shadow: var(--inset-bevel), var(--shadow-deep), var(--leaf-glow);
   }
 
-  .text-gold {
-    color: hsl(var(--cosmos-gold));
+  .text-gold  { color: var(--turmeric); }
+  .text-rose  { color: var(--vermilion); }
+  .text-indigo{ color: var(--brass); }      /* indigo accent role now belongs to brass */
+  .text-bone  { color: var(--bone); }
+  .text-bone-2{ color: var(--bone-2); }
+  .text-bone-3{ color: var(--bone-3); }
+  .text-bone-4{ color: var(--bone-4); }
+  .text-brass     { color: var(--brass); }
+  .text-brass-hi  { color: var(--brass-hi); }
+  .text-saffron   { color: var(--saffron); }
+  .text-turmeric  { color: var(--turmeric); }
+  .text-vermilion { color: var(--vermilion); }
+  .text-maroon    { color: var(--maroon); }
+  .text-indigo-cloth { color: var(--indigo-2); }
+  .text-leaf      { color: var(--leaf); }
+
+  /* ─── Tablet — the rune card ─── */
+  .tablet {
+    background: linear-gradient(180deg, var(--ink-3), var(--ink-2));
+    border: 1px solid rgba(199, 154, 58, 0.18);
+    box-shadow: var(--inset-bevel), var(--shadow-deep);
+    position: relative;
+    transition: border-color 0.18s ease, background 0.18s ease;
   }
-  .text-rose {
-    color: hsl(var(--cosmos-rose));
+  .tablet:hover {
+    border-color: rgba(199, 154, 58, 0.35);
+    background: linear-gradient(180deg, var(--ink-4), var(--ink-3));
   }
-  .text-indigo {
-    color: hsl(var(--cosmos-indigo));
+  .tablet[data-active="true"],
+  .tablet.is-active {
+    border-color: rgba(199, 154, 58, 0.5);
+    box-shadow: var(--inset-bevel), var(--shadow-deep), var(--leaf-glow);
   }
 
-  .ring-gold {
-    --tw-ring-color: hsl(var(--cosmos-gold));
+  /* Tablet corner ticks — small brass right-angles in each corner */
+  .tablet-corners > i,
+  .tablet-corners::before,
+  .tablet-corners::after {
+    content: '';
+    position: absolute;
+    width: 10px; height: 10px;
+    border: 1px solid rgba(199, 154, 58, 0.6);
+    pointer-events: none;
   }
-  .ring-rose {
-    --tw-ring-color: hsl(var(--cosmos-rose));
+  .tablet-corners::before { top: 6px; left: 6px;  border-right: none; border-bottom: none; }
+  .tablet-corners::after  { top: 6px; right: 6px; border-left: none;  border-bottom: none; }
+  .tablet-corners > i:nth-child(1) { bottom: 6px; left: 6px;  border-right: none; border-top: none; display: block; }
+  .tablet-corners > i:nth-child(2) { bottom: 6px; right: 6px; border-left: none;  border-top: none; display: block; }
+
+  /* ─── Vermilion seal (sindoor circle) ─── */
+  .seal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--vermilion), var(--maroon) 70%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 180, 150, 0.3);
+    color: var(--bone);
+    font-family: var(--font-cormorant-sc), serif;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    line-height: 1;
   }
+
+  /* ─── Capsule (replaces Badge for chip-like tags) ─── */
+  .capsule {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid rgba(199, 154, 58, 0.3);
+    border-radius: 999px;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bone-2);
+    background: rgba(0, 0, 0, 0.2);
+    line-height: 1;
+  }
+  .capsule-brass    { color: var(--brass-hi); border-color: rgba(199, 154, 58, 0.55); }
+  .capsule-maroon   { color: #f0c0b0;        border-color: rgba(155, 36, 25, 0.55); background: rgba(155, 36, 25, 0.12); }
+  .capsule-indigo   { color: #b8c4ee;        border-color: rgba(74, 90, 154, 0.55); background: rgba(46, 58, 110, 0.18); }
+  .capsule-leaf     { color: #c8d8ad;        border-color: rgba(74, 106, 58, 0.55); background: rgba(74, 106, 58, 0.14); }
+  .capsule-turmeric { color: #f3d36a;        border-color: rgba(217, 167, 58, 0.55); background: rgba(217, 167, 58, 0.10); }
+  .capsule-vermilion{ color: #f0c0b0;        border-color: rgba(200, 54, 42, 0.55); background: rgba(200, 54, 42, 0.10); }
+
+  /* ─── Brass divider (the ornament rule) ─── */
+  .brass-rule {
+    display: flex; align-items: center; gap: 14px;
+    color: var(--bone-4);
+  }
+  .brass-rule::before,
+  .brass-rule::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(199, 154, 58, 0.4), transparent);
+  }
+  .brass-rule-glyph {
+    width: 8px; height: 8px;
+    border: 1px solid var(--brass);
+    transform: rotate(45deg);
+  }
+
+  /* ─── Eyebrow with diamond-dot separator ─── */
+  .eyebrow-text {
+    font-family: var(--font-cormorant-sc), serif;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--brass);
+    font-weight: 600;
+  }
+  .eyebrow-dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--brass);
+    margin: 0 12px 2px;
+    vertical-align: middle;
+    transform: rotate(45deg);
+  }
+
+  /* ─── Wall frame — corner motifs around the page ─── */
+  .wall-frame {
+    position: absolute; inset: 24px;
+    border: 1px solid rgba(199, 154, 58, 0.28);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .wall-frame::before,
+  .wall-frame::after {
+    content: '';
+    position: absolute;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(199, 154, 58, 0.55);
+  }
+  .wall-frame::before { top: -6px; left: -6px;  border-right: none; border-bottom: none; }
+  .wall-frame::after  { bottom: -6px; right: -6px; border-left: none; border-top: none; }
+  .wall-frame .corner    { position: absolute; width: 36px; height: 36px; border: 1px solid rgba(199, 154, 58, 0.55); }
+  .wall-frame .corner.tr { top: -6px;    right: -6px;  border-left: none;  border-bottom: none; }
+  .wall-frame .corner.bl { bottom: -6px; left: -6px;   border-right: none; border-top: none; }
+
+  /* When Devanāgarī toggle is off, hide deva-only nodes */
+  .no-deva .deva-only { display: none; }
 }
 
-/* Reduced motion — fully disable transitions */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -154,19 +317,24 @@
   }
 }
 
-/* Print styles for /print */
+/* Print — strip the temple chrome */
 @media print {
   body {
     background: white !important;
     color: black !important;
     background-image: none !important;
   }
-  .no-print {
-    display: none !important;
-  }
-  .surface-glass {
+  .no-print { display: none !important; }
+  .surface-glass,
+  .tablet {
     background: white !important;
     border: 1px solid #ddd !important;
-    backdrop-filter: none !important;
+    box-shadow: none !important;
   }
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--ink-2); }
+::-webkit-scrollbar-thumb { background: var(--bone-4); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brass-lo); }

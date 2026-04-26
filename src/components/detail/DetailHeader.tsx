@@ -7,8 +7,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Sanskrit } from "@/components/Sanskrit";
+import { Deva } from "@/components/devanagari-context";
 import { QuickStat } from "@/components/QuickStat";
-import { Badge } from "@/components/ui/badge";
+import { Eyebrow } from "@/components/temple/Eyebrow";
+import { Seal } from "@/components/temple/Seal";
+import { BrassRule } from "@/components/temple/BrassRule";
 
 export interface QuickStatItem {
   label: string;
@@ -17,11 +20,17 @@ export interface QuickStatItem {
 }
 
 interface DetailHeaderProps {
-  /** Domain badge displayed above the name (e.g. "1 / Planets"). */
-  eyebrow: { number: 1 | 2 | 3; label: string };
-  /** Main visual identifier — large glyph, number, or symbol. */
+  /** Domain badge: roman numeral seal + label (e.g. "I" + "Graha · 03 of 09"). */
+  eyebrow: {
+    /** Roman numeral inside the seal. */
+    numeral: "I" | "II" | "III";
+    label: string;
+  };
+  /** Main visual identifier — yantra portrait or large glyph. */
   glyph: React.ReactNode;
   sanskritName: string;
+  /** Devanāgarī rendering shown beneath the sanskrit name. */
+  deva?: string;
   englishName: string;
   tamilName?: string;
   /** Optional one-line subtitle under the name (e.g. role / English meaning). */
@@ -48,6 +57,7 @@ export function DetailHeader({
   eyebrow,
   glyph,
   sanskritName,
+  deva,
   englishName,
   tamilName,
   meaning,
@@ -87,11 +97,12 @@ export function DetailHeader({
     <header className="flex flex-col gap-5 pb-2">
       {/* Eyebrow + nav */}
       <div className="flex items-center justify-between">
-        <Badge variant="indigo" className="font-display text-[11px] tracking-[0.16em]">
-          <span className="font-medium tabular-nums">{eyebrow.number}</span>
-          <span className="mx-1.5 opacity-60">·</span>
-          <span>{eyebrow.label}</span>
-        </Badge>
+        <Eyebrow className="flex items-center gap-3 normal-case">
+          <Seal size="sm">{eyebrow.numeral}</Seal>
+          <span className="font-titling uppercase tracking-[0.22em] text-brass">
+            {eyebrow.label}
+          </span>
+        </Eyebrow>
         <div className="flex items-center gap-1">
           <NavChevron href={prevHref} label={prevLabel} direction="prev" />
           <NavChevron href={nextHref} label={nextLabel} direction="next" />
@@ -102,37 +113,41 @@ export function DetailHeader({
       <div className="flex flex-col gap-5 md:flex-row md:items-center md:gap-8">
         <div
           aria-hidden
-          className="flex size-24 shrink-0 items-center justify-center rounded-2xl border border-cosmos-line bg-cosmos-surface text-foreground/90 backdrop-blur md:size-28"
+          className="flex size-28 shrink-0 items-center justify-center rounded-sm border border-brass/30 bg-ink-2/70 text-brass-hi md:size-32"
         >
           {glyph}
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <h1 className="font-display text-5xl font-light leading-[1.05] text-foreground md:text-6xl">
-            <Sanskrit className="not-italic">{sanskritName}</Sanskrit>
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <h1 className="font-display text-5xl font-normal leading-[1.05] text-bone md:text-6xl">
+            <Sanskrit className="not-italic font-display">{sanskritName}</Sanskrit>
           </h1>
-          <p className="text-base text-muted-foreground md:text-lg">
+          {deva ? (
+            <Deva className="text-2xl text-brass-hi">{deva}</Deva>
+          ) : null}
+          <p className="font-titling text-xs uppercase tracking-[0.22em] text-bone-3">
             {englishName}
             {tamilName ? (
               <>
-                <span className="mx-2 text-foreground/30">·</span>
-                <Sanskrit className="not-italic text-muted-foreground">
+                <span className="mx-2 text-bone-4">·</span>
+                <Sanskrit className="not-italic font-titling text-bone-3">
                   {tamilName}
                 </Sanskrit>
               </>
             ) : null}
           </p>
           {meaning ? (
-            <p className="mt-0.5 text-sm italic text-muted-foreground/85">
+            <p className="mt-1 font-display text-base italic text-bone-2">
               {meaning}
             </p>
           ) : null}
         </div>
       </div>
 
-      {/* Quick stats — 2/3 col grid; never crammed into 6 wide because long
-          values (deities, multi-word phrases) ragged the baseline at lg:6. */}
+      <BrassRule />
+
+      {/* Quick stats — 3-col grid */}
       {quickStats.length > 0 ? (
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5 border-y border-cosmos-line py-5 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3">
           {quickStats.map((s) => (
             <QuickStat
               key={s.label}
@@ -143,6 +158,8 @@ export function DetailHeader({
           ))}
         </div>
       ) : null}
+
+      <BrassRule className="mt-1" />
     </header>
   );
 }
@@ -159,8 +176,8 @@ function NavChevron({
   const Icon = direction === "prev" ? ChevronLeft : ChevronRight;
   const arrow = direction === "prev" ? "←" : "→";
   const className = cn(
-    "group inline-flex h-9 items-center gap-1.5 rounded-md border border-cosmos-line bg-cosmos-surface px-2.5 text-xs text-muted-foreground transition-colors",
-    href ? "hover:border-primary/40 hover:text-foreground" : "opacity-40 cursor-not-allowed",
+    "group inline-flex h-9 items-center gap-1.5 rounded-sm border border-brass/35 bg-ink-2 px-2.5 font-titling text-[10px] uppercase tracking-[0.2em] text-bone-2 transition-colors",
+    href ? "hover:border-brass hover:text-brass-hi" : "opacity-40 cursor-not-allowed",
   );
   if (!href) {
     return (
