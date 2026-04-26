@@ -83,6 +83,41 @@ export function CommandPalette() {
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>
 
+        {tab === "all" ? (
+          <CommandGroup heading="Pages">
+            <CommandItem
+              value="page chart drishti aspects"
+              onSelect={() => go("/chart")}
+            >
+              <span className="w-6 text-center font-display text-lg">⊕</span>
+              <span className="flex-1 truncate">
+                <Sanskrit className="not-italic text-foreground">
+                  Dṛṣṭi Cakra
+                </Sanskrit>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  Interactive chart with aspect lines
+                </span>
+              </span>
+              <Badge variant="indigo">Chart</Badge>
+            </CommandItem>
+            <CommandItem
+              value="page glossary shabdakosha terms"
+              onSelect={() => go("/glossary")}
+            >
+              <span className="w-6 text-center font-display text-lg">℞</span>
+              <span className="flex-1 truncate">
+                <Sanskrit className="not-italic text-foreground">
+                  Śabdakośa
+                </Sanskrit>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  Glossary of Sanskrit + Tamil terms
+                </span>
+              </span>
+              <Badge variant="indigo">Page</Badge>
+            </CommandItem>
+          </CommandGroup>
+        ) : null}
+
         {showPlanets ? (
           <CommandGroup heading="Planets · Grahas">
             {PLANETS.map((p) => (

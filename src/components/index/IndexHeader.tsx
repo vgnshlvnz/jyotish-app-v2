@@ -5,7 +5,7 @@ import { Seal } from "@/components/temple/Seal";
 import { BrassRule } from "@/components/temple/BrassRule";
 
 interface IndexHeaderProps {
-  numeral: "I" | "II" | "III";
+  numeral: "I" | "II" | "III" | "IV";
   /** Eyebrow line above the title (e.g. "The Nine Grahas"). */
   eyebrow: string;
   title: string;
